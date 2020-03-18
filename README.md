@@ -1,4 +1,4 @@
 # test-task-React
 
-Installation: npm install
+<p>Installation: npm install</p>
 Demo: npm run dev
