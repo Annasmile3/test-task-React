@@ -93,6 +93,151 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./actions/index.ts":
+/*!**************************!*\
+  !*** ./actions/index.ts ***!
+  \**************************/
+/*! exports provided: fetchPosts, fetchPost, addPost, fetchComments, addComment */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchPosts", function() { return fetchPosts; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchPost", function() { return fetchPost; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addPost", function() { return addPost; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchComments", function() { return fetchComments; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addComment", function() { return addComment; });
+/* harmony import */ var _constants_action_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/action-types */ "./constants/action-types.ts");
+/* harmony import */ var _api_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/client */ "./api/client.ts");
+
+
+const fetchPosts = () => async dispatch => {
+  const posts = await Object(_api_client__WEBPACK_IMPORTED_MODULE_1__["getPosts"])();
+  return dispatch({
+    type: _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["FETCH_POSTS"],
+    posts
+  });
+};
+const fetchPost = postId => async dispatch => {
+  const post = await Object(_api_client__WEBPACK_IMPORTED_MODULE_1__["getPost"])(postId);
+  return dispatch({
+    type: _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["FETCH_POST"],
+    post
+  });
+};
+const addPost = newPost => async dispatch => {
+  const post = await Object(_api_client__WEBPACK_IMPORTED_MODULE_1__["createPost"])(newPost);
+  return dispatch({
+    type: _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["ADD_POST"],
+    post
+  });
+};
+const fetchComments = () => async dispatch => {
+  const comments = await Object(_api_client__WEBPACK_IMPORTED_MODULE_1__["getComments"])();
+  return dispatch({
+    type: _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["FETCH_COMMENTS"],
+    comments
+  });
+};
+const addComment = newComment => async dispatch => {
+  const comment = await Object(_api_client__WEBPACK_IMPORTED_MODULE_1__["createComment"])(newComment);
+  return dispatch({
+    type: _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["ADD_COMMENT"],
+    comment
+  });
+};
+
+/***/ }),
+
+/***/ "./api/client.ts":
+/*!***********************!*\
+  !*** ./api/client.ts ***!
+  \***********************/
+/*! exports provided: createPost, getPost, getPosts, createComment, getComments */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPost", function() { return createPost; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPost", function() { return getPost; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPosts", function() { return getPosts; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createComment", function() { return createComment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getComments", function() { return getComments; });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "axios");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+const apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+  baseURL: 'https://simple-blog-api.crew.red',
+  responseType: 'json',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+const createPost = async newPost => {
+  try {
+    const response = await apiClient.post('/posts', newPost);
+    const post = response.data;
+    return post;
+  } catch (err) {
+    if (err && err.response) {
+      console.log(err.response.status);
+    }
+
+    throw err;
+  }
+};
+const getPost = async id => {
+  try {
+    const response = await apiClient.get(`/posts/${id}?_embed=comments`);
+    return response.data;
+  } catch (err) {
+    if (err && err.response) {
+      console.log(err.response.status);
+    }
+
+    throw err;
+  }
+};
+const getPosts = async () => {
+  try {
+    const response = await apiClient.get('/posts');
+    return response.data;
+  } catch (err) {
+    if (err && err.response) {
+      console.log(err.response.status);
+    }
+
+    throw err;
+  }
+};
+const createComment = async newComment => {
+  try {
+    const response = await apiClient.post('/comments', newComment);
+    const comment = response.data;
+    return comment;
+  } catch (err) {
+    if (err && err.response) {
+      console.log(err.response.status);
+    }
+
+    throw err;
+  }
+};
+const getComments = async () => {
+  try {
+    const response = await apiClient.get('/comments');
+    return response.data;
+  } catch (err) {
+    if (err && err.response) {
+      console.log(err.response.status);
+    }
+
+    throw err;
+  }
+};
+
+/***/ }),
+
 /***/ "./components/Header.tsx":
 /*!*******************************!*\
   !*** ./components/Header.tsx ***!
@@ -110,8 +255,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! styled-components */ "styled-components");
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_2__);
 var _jsxFileName = "D:\\test_tasks\\test-task-React\\components\\Header.tsx";
-
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
 
 
 const HeaderWrapper = styled_components__WEBPACK_IMPORTED_MODULE_2___default.a.div`
@@ -136,33 +281,33 @@ function Header() {
   return __jsx(HeaderWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 25
+      lineNumber: 27
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 26
+      lineNumber: 28
     },
     __self: this
   }, __jsx(A, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 27
+      lineNumber: 29
     },
     __self: this
   }, "Latest posts")), __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
     href: "/posts/new",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 29
+      lineNumber: 31
     },
     __self: this
   }, __jsx(A, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 30
+      lineNumber: 32
     },
     __self: this
   }, "New post")));
@@ -179,40 +324,64 @@ function Header() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Layout; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Header */ "./components/Header.tsx");
-/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! styled-components */ "styled-components");
-/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! styled-components */ "styled-components");
+/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Header */ "./components/Header.tsx");
 var _jsxFileName = "D:\\test_tasks\\test-task-React\\components\\MyLayout.tsx";
-
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
-const Wrapper = styled_components__WEBPACK_IMPORTED_MODULE_2___default.a.div`
+
+const Wrapper = styled_components__WEBPACK_IMPORTED_MODULE_1___default.a.div`
   padding: 0 50px;
-  border: 1px solid #DDD;
-  font-family: "Gill Sans", sans-serif;
+  border: 1px solid #ddd;
+  font-family: 'Gill Sans', sans-serif;
   @media (max-width: 500px) {
     padding: 0 15px;
   }
 `;
-function Layout(props) {
-  return __jsx(Wrapper, {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 15
-    },
-    __self: this
-  }, __jsx(_Header__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 16
-    },
-    __self: this
-  }), props.children);
-}
+
+const LayoutTemplate = ({
+  children
+}) => __jsx(Wrapper, {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 19
+  },
+  __self: undefined
+}, __jsx(_Header__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 20
+  },
+  __self: undefined
+}), children);
+
+/* harmony default export */ __webpack_exports__["default"] = (LayoutTemplate);
+
+/***/ }),
+
+/***/ "./constants/action-types.ts":
+/*!***********************************!*\
+  !*** ./constants/action-types.ts ***!
+  \***********************************/
+/*! exports provided: ADD_POST, ADD_COMMENT, FETCH_POSTS, FETCH_POST, FETCH_COMMENTS */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_POST", function() { return ADD_POST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_COMMENT", function() { return ADD_COMMENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_POSTS", function() { return FETCH_POSTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_POST", function() { return FETCH_POST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_COMMENTS", function() { return FETCH_COMMENTS; });
+const ADD_POST = 'ADD_POST';
+const ADD_COMMENT = 'ADD_COMMENT';
+const FETCH_POSTS = 'FETCH_POSTS';
+const FETCH_POST = 'FETCH_POST';
+const FETCH_COMMENTS = 'FETCH_COMMENTS';
 
 /***/ }),
 
@@ -1902,25 +2071,26 @@ module.exports = __webpack_require__(/*! ./dist/client/link */ "./node_modules/n
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_MyLayout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/MyLayout */ "./components/MyLayout.tsx");
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/link */ "./node_modules/next/link.js");
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! styled-components */ "styled-components");
-/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "axios");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/link */ "./node_modules/next/link.js");
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! styled-components */ "styled-components");
+/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _store_index__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../store/index */ "./store/index.ts");
+/* harmony import */ var _actions_index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../actions/index */ "./actions/index.ts");
+/* harmony import */ var _components_MyLayout__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/MyLayout */ "./components/MyLayout.tsx");
 var _jsxFileName = "D:\\test_tasks\\test-task-React\\pages\\index.tsx";
-
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 
 
-const Heading = styled_components__WEBPACK_IMPORTED_MODULE_3___default.a.h1`
+
+
+const Heading = styled_components__WEBPACK_IMPORTED_MODULE_2___default.a.h1`
   width: 200px;
   margin: 30px auto 50px;
 `;
-const PostList = styled_components__WEBPACK_IMPORTED_MODULE_3___default.a.ul`
+const PostList = styled_components__WEBPACK_IMPORTED_MODULE_2___default.a.ul`
   list-style-type: none;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -1957,56 +2127,57 @@ const PostList = styled_components__WEBPACK_IMPORTED_MODULE_3___default.a.ul`
     grid-template-columns: 1fr;
     gap: 15px;
   }
-
 `;
 
-const Index = props => {
-  return __jsx(_components_MyLayout__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 56
-    },
-    __self: undefined
-  }, __jsx(Heading, {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 57
-    },
-    __self: undefined
-  }, "Latest posts"), __jsx(PostList, {
+const Index = ({
+  posts
+}) => {
+  return __jsx(_components_MyLayout__WEBPACK_IMPORTED_MODULE_5__["default"], {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 58
     },
     __self: undefined
-  }, props.posts.map(post => __jsx("li", {
-    key: post.id,
+  }, __jsx(Heading, {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 59
+    },
+    __self: undefined
+  }, "Latest posts"), __jsx(PostList, {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 60
     },
     __self: undefined
-  }, __jsx("img", {
-    className: "post-photo",
-    src: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=2000&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ",
-    alt: "post photo",
+  }, posts.map(post => __jsx("li", {
+    key: post.id,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 61
+      lineNumber: 62
+    },
+    __self: undefined
+  }, __jsx("img", {
+    className: "post-photo",
+    alt: "laptop",
+    src: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=2000&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 63
     },
     __self: undefined
   }), __jsx("br", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 66
+      lineNumber: 68
     },
     __self: undefined
-  }), __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
+  }), __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
     href: "/posts/[id]`",
     as: `/posts/${post.id}`,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 67
+      lineNumber: 69
     },
     __self: undefined
   }, __jsx("a", {
@@ -2014,27 +2185,125 @@ const Index = props => {
     className: "title",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 68
+      lineNumber: 70
     },
     __self: undefined
   }, post.title)), __jsx("p", {
     className: "content",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 70
+      lineNumber: 72
     },
     __self: undefined
   }, post.body)))));
 };
 
-Index.getInitialProps = async function () {
-  const res = await axios__WEBPACK_IMPORTED_MODULE_4___default.a.get('https://simple-blog-api.crew.red/posts/');
-  return {
-    posts: res.data
-  };
+Index.getInitialProps = function ({
+  store
+}) {
+  const posts = store.dispatch(Object(_actions_index__WEBPACK_IMPORTED_MODULE_4__["fetchPosts"])());
+  return posts;
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Index);
+/* harmony default export */ __webpack_exports__["default"] = (Object(_store_index__WEBPACK_IMPORTED_MODULE_3__["nextConnect"])(state => state)(Index));
+
+/***/ }),
+
+/***/ "./reducers/index.ts":
+/*!***************************!*\
+  !*** ./reducers/index.ts ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _constants_action_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/action-types */ "./constants/action-types.ts");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux */ "redux");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(redux__WEBPACK_IMPORTED_MODULE_1__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+const postStore = (state = {
+  posts: []
+}, action) => {
+  switch (action.type) {
+    case _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["ADD_POST"]:
+      return Object.assign({}, state, {
+        posts: [...state.posts, action.post]
+      });
+
+    case _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["FETCH_POSTS"]:
+      return _objectSpread({}, state, {
+        posts: action.posts
+      });
+
+    case _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["FETCH_POST"]:
+      return _objectSpread({}, state, {
+        post: action.post
+      });
+
+    default:
+      return state;
+  }
+};
+
+const commentStore = (state = {
+  comments: []
+}, action) => {
+  switch (action.type) {
+    case _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["ADD_COMMENT"]:
+      return Object.assign({}, state, {
+        comments: [...state.comments, action.comment]
+      });
+
+    case _constants_action_types__WEBPACK_IMPORTED_MODULE_0__["FETCH_COMMENTS"]:
+      return _objectSpread({}, state, {
+        comments: action.comments
+      });
+
+    default:
+      return state;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_1__["combineReducers"])({
+  postStore,
+  commentStore
+}));
+
+/***/ }),
+
+/***/ "./store/index.ts":
+/*!************************!*\
+  !*** ./store/index.ts ***!
+  \************************/
+/*! exports provided: store, nextConnect */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "store", function() { return store; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nextConnect", function() { return nextConnect; });
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "redux");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(redux__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_connect_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next-connect-redux */ "next-connect-redux");
+/* harmony import */ var next_connect_redux__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_connect_redux__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! redux-thunk */ "redux-thunk");
+/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(redux_thunk__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _reducers_index__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../reducers/index */ "./reducers/index.ts");
+
+
+
+
+const store = initialState => Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers_index__WEBPACK_IMPORTED_MODULE_3__["default"], initialState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"])(redux_thunk__WEBPACK_IMPORTED_MODULE_2___default.a));
+const nextConnect = next_connect_redux__WEBPACK_IMPORTED_MODULE_1___default()(store);
 
 /***/ }),
 
@@ -2058,6 +2327,17 @@ module.exports = __webpack_require__(/*! D:\test_tasks\test-task-React\pages\ind
 /***/ (function(module, exports) {
 
 module.exports = require("axios");
+
+/***/ }),
+
+/***/ "next-connect-redux":
+/*!*************************************!*\
+  !*** external "next-connect-redux" ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("next-connect-redux");
 
 /***/ }),
 
@@ -2102,6 +2382,28 @@ module.exports = require("react");
 /***/ (function(module, exports) {
 
 module.exports = require("react-is");
+
+/***/ }),
+
+/***/ "redux":
+/*!************************!*\
+  !*** external "redux" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("redux");
+
+/***/ }),
+
+/***/ "redux-thunk":
+/*!******************************!*\
+  !*** external "redux-thunk" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("redux-thunk");
 
 /***/ }),
 

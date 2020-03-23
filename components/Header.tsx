@@ -1,9 +1,11 @@
-import Link from 'next/link'
-import styled from 'styled-components'
+import React from 'react';
+import Link from 'next/link';
+import styled from 'styled-components';
 
-const HeaderWrapper = styled.div `
+const HeaderWrapper = styled.div`
   margin-top: 20px;
-`
+`;
+
 const A = styled.a`
   background: transparent;
   border-radius: 3px;
@@ -18,7 +20,7 @@ const A = styled.a`
     color: #fff; 
     opacity: 0.8;
   }
-`
+`;
 
 export default function Header() {
   return (
@@ -30,5 +32,5 @@ export default function Header() {
         <A>New post</A>
       </Link>
     </HeaderWrapper>
-  )
+  );
 }

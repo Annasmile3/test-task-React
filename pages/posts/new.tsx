@@ -1,12 +1,13 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import styled from 'styled-components';
+import { nextConnect } from '../../store/index';
+import { addPost } from '../../actions';
 import Layout from '../../components/MyLayout';
-import axios  from 'axios';
-import styled from 'styled-components'
-
 const Heading = styled.h1`
   width: 250px;
   margin: 30px auto 40px;
-`
+`;
+
 const NewPostForm = styled.form`
   width: 250px;
   margin: 30px auto 50px;
@@ -34,7 +35,7 @@ const NewPostForm = styled.form`
     text-align: left;
     color: red;
   }
-`
+`;
 
 const SubmitButton = styled.button`
   width: 80px;
@@ -48,8 +49,9 @@ const SubmitButton = styled.button`
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
-`
-const NewPost = () => {
+`;
+
+const NewPost = (store) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [error, setError] = useState(false);
@@ -64,42 +66,46 @@ const NewPost = () => {
     setBody(e.target.value);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit =  (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (title.trim() !== '' &&  body.trim() !== '') {
-      await axios
-        .post('https://simple-blog-api.crew.red/posts', { title, body });
+
+    if (title.trim() !== '' && body.trim() !== '') {
+      store.dispatch(addPost({ title, body }));
       setTitle('');
       setBody('');
     } else {
       setError(true);
     }
-  }  
-    return(
-      <Layout>
-        <Heading>Create new post</Heading>
-          <NewPostForm onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={title}
-              name="title"
-              placeholder="Enter the title"
-              onChange={handleTitleChange}
-            />
-            {(error && title.trim() === '') && <div className="error">The title is empty</div>}
-            <textarea
-              rows={5}
-              value={body} 
-              name="body"
-              placeholder="Enter the post" 
-              onChange={handleBodyChange} 
-            />
-            {(error && body.trim() === '') && <div className="error">The post field is empty</div>}
-            <SubmitButton type="submit">Create</SubmitButton>
-          </NewPostForm>
-      </Layout>
-    );
   };
+  return (
+    <Layout>
+      <Heading>Create new post</Heading>
+      <NewPostForm onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={title}
+          name="title"
+          placeholder="Enter the title"
+          onChange={handleTitleChange}
+        />
+        {(error && title.trim() === '') &&
+         <div className="error">The title is empty</div>
+        }
+        <textarea
+          rows={5}
+          value={body}
+          name="body"
+          placeholder="Enter the post"
+          onChange={handleBodyChange}
+        />
+        {(error && body.trim() === '') &&
+         <div className="error">The post field is empty</div>
+        }
+        <SubmitButton type="submit">Create</SubmitButton>
+      </NewPostForm>
+    </Layout>
+  );
+};
 
-export default NewPost;
+export default nextConnect((state) => state)(NewPost)
+ 
